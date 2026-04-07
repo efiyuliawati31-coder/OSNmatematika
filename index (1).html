@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSN Math Challenge - Latihan 20 Soal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="max-w-3xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+        <!-- Konten akan diisi oleh JavaScript -->
+    </div>
+
+    <script>
+        // --- KONFIGURASI GOOGLE FORM ---
+        // Ganti ID di bawah ini agar hasil tersimpan ke Google Form milikmu
+        const GOOGLE_FORM_CONFIG = {
+            formId: "", // Masukkan ID Form (contoh: 1FAIpQLSf...)
+            entryIds: {
+                nama: "entry.123456789",
+                skor: "entry.987654321",
+                jawaban: "entry.555666777"
+            }
+        };
+
+        const QUESTION_BANK = [
+            { id: 1, category: "Aljabar", question: "Jika x + (1/x) = 3, maka nilai dari x² + (1/x²) adalah...", options: ["7", "9", "11", "47"], correctAnswer: "7", solution: "Kuadratkan kedua ruas: (x + 1/x)² = 3². Hasilnya x² + 2(x)(1/x) + (1/x²) = 9. Karena 2(x)(1/x) = 2, maka x² + 2 + (1/x²) = 9. Jadi x² + (1/x²) = 9 - 2 = 7." },
+            { id: 2, category: "Teori Bilangan", question: "Berapa banyak bilangan bulat positif n sehingga (n + 3) habis membagi (n² + 7)?", options: ["2", "3", "4", "5"], correctAnswer: "3", solution: "n² + 7 dapat ditulis (n² - 9) + 16 = (n - 3)(n + 3) + 16. Faktor dari 16 yang habis dibagi n+3 (n positif) adalah 4, 8, 16. n=1, 5, 13." },
+            { id: 3, category: "Geometri", question: "Sebuah segitiga memiliki sisi 13, 14, dan 15. Berapakah luas segitiga tersebut?", options: ["42", "84", "90", "105"], correctAnswer: "84", solution: "s = (13+14+15)/2 = 21. Luas = √(21 * 8 * 7 * 6) = 84." },
+            { id: 4, category: "Kombinatorika", question: "Cara menyusun angka 1, 2, 3, 4, 5 agar 2 dan 3 selalu berdampingan adalah...", options: ["24", "48", "60", "120"], correctAnswer: "48", solution: "Paket (2,3) dihitung satu: 4! * 2! = 24 * 2 = 48." },
+            { id: 5, category: "Logika", question: "Jika hari ini Senin, hari apakah 2025 hari yang lalu?", options: ["Sabtu", "Minggu", "Senin", "Selasa"], correctAnswer: "Sabtu", solution: "2025 mod 7 = 2. Dua hari sebelum Senin adalah Sabtu." },
+            { id: 6, category: "Aljabar", question: "Jika f(x) = 2x + 3 dan g(x) = x² - 1, maka f(g(2)) adalah...", options: ["3", "5", "9", "11"], correctAnswer: "9", solution: "g(2) = 3. f(3) = 2(3)+3 = 9." },
+            { id: 7, category: "Teori Bilangan", question: "Digit terakhir dari 3 pangkat 2024 adalah...", options: ["1", "3", "7", "9"], correctAnswer: "1", solution: "Pola: 3, 9, 7, 1. Karena 2024 habis dibagi 4, maka digitnya 1." },
+            { id: 8, category: "Geometri", question: "Jumlah sudut dalam segi-6 beraturan adalah...", options: ["360°", "540°", "720°", "900°"], correctAnswer: "720°", solution: "(6-2) * 180 = 720." },
+            { id: 9, category: "Kombinatorika", question: "Jabat tangan 10 orang (setiap orang satu kali) adalah...", options: ["10", "20", "45", "90"], correctAnswer: "45", solution: "10C2 = (10*9)/2 = 45." },
+            { id: 10, category: "Aljabar", question: "Jika √(x + 4) = 4, maka nilai x adalah...", options: ["2", "4", "12", "14"], correctAnswer: "12", solution: "x + 4 = 16 -> x = 12." },
+            { id: 11, category: "Teori Bilangan", question: "FPB dari 72 dan 120 adalah...", options: ["12", "24", "36", "48"], correctAnswer: "24", solution: "72 = 24*3, 120 = 24*5. FPB = 24." },
+            { id: 12, category: "Geometri", question: "Lingkaran luas 154 cm². Kelilingnya? (π=22/7)", options: ["22 cm", "44 cm", "66 cm", "88 cm"], correctAnswer: "44 cm", solution: "r² = 154 * 7/22 = 49 -> r=7. K = 2 * 22/7 * 7 = 44." },
+            { id: 13, category: "Aljabar", question: "Jika a+b=5 dan ab=6, maka a²+b² adalah...", options: ["13", "19", "25", "37"], correctAnswer: "13", solution: "5² - 2(6) = 25 - 12 = 13." },
+            { id: 14, category: "Kombinatorika", question: "Bilangan 2 angka dari {1,2,3,4} yang > 20 adalah...", options: ["6", "9", "12", "16"], correctAnswer: "9", solution: "Angka pertama 2, 3, atau 4. Masing-masing punya 3 pasangan. 3*3=9." },
+            { id: 15, category: "Teori Bilangan", question: "Jumlah 10 bilangan asli pertama adalah...", options: ["45", "50", "55", "60"], correctAnswer: "55", solution: "10 * 11 / 2 = 55." },
+            { id: 16, category: "Geometri", question: "Kubus diagonal ruang √27. Volumenya?", options: ["9", "27", "64", "81"], correctAnswer: "27", solution: "s√3 = √27 -> s=3. V = 3³ = 27." },
+            { id: 17, category: "Aljabar", question: "Suku ke-10 dari 3, 7, 11, 15... adalah...", options: ["36", "39", "40", "43"], correctAnswer: "39", solution: "3 + (9 * 4) = 39." },
+            { id: 18, category: "Logika", question: "A>B, C<B, B>D>C. Siapa paling muda?", options: ["A", "B", "C", "D"], correctAnswer: "C", solution: "Urutan: A > B > D > C." },
+            { id: 19, category: "Kombinatorika", question: "Peluang jumlah mata dadu 7 dari 2 dadu adalah...", options: ["1/6", "1/12", "5/36", "7/36"], correctAnswer: "1/6", solution: "Ada 6 pasang (1,6 dst) dari 36. 6/36 = 1/6." },
+            { id: 20, category: "Teori Bilangan", question: "Bilangan prima antara 40 dan 50 adalah...", options: ["41, 43, 47", "41, 43, 49", "43, 47, 49", "41, 47"], correctAnswer: "41, 43, 47", solution: "49 habis dibagi 7, sisanya prima." }
+        ];
+
+        let state = {
+            view: 'landing',
+            userName: '',
+            currentIndex: 0,
+            score: 0,
+            userAnswers: [],
+            selectedOption: null,
+            showSolution: false,
+            isSubmitting: false
+        };
+
+        function render() {
+            const container = document.getElementById('app');
+            
+            if (state.view === 'landing') {
+                container.innerHTML = `
+                    <div class="bg-indigo-700 p-6 text-white text-center">
+                        <h1 class="text-xl font-bold uppercase tracking-widest">OSN Math Challenge</h1>
+                    </div>
+                    <div class="p-10 text-center space-y-8 animate-fade-in">
+                        <div class="bg-indigo-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto ring-8 ring-indigo-50/50">
+                            <i class="fa-solid fa-user text-indigo-600 text-4xl"></i>
+                        </div>
+                        <div class="space-y-3">
+                            <h2 class="text-3xl font-black text-slate-800">Siap Jadi Juara?</h2>
+                            <p class="text-slate-500 max-w-sm mx-auto text-sm">Tantang dirimu dengan 20 soal pilihan terbaik. Hasil akan direkap otomatis.</p>
+                        </div>
+                        <div class="max-w-sm mx-auto space-y-4">
+                            <input type="text" id="nameInput" placeholder="Tulis namamu..." 
+                                class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-500 outline-none transition-all text-center font-bold text-lg"
+                                value="${state.userName}">
+                            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2">
+                                Mulai Latihan <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (state.view === 'quiz') {
+                const q = QUESTION_BANK[state.currentIndex];
+                container.innerHTML = `
+                    <div class="bg-indigo-700 p-6 text-white flex justify-between items-center shadow-md">
+                        <div class="flex items-center gap-3 text-sm font-bold">
+                            <i class="fa-solid fa-book-open"></i> OSN Math Challenge
+                        </div>
+                        <div class="bg-indigo-600 px-4 py-1 rounded-full text-sm font-bold border border-indigo-400">
+                            ${state.currentIndex + 1} / ${QUESTION_BANK.length}
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-10 space-y-6 animate-fade-in">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                            <span class="bg-indigo-100 text-indigo-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">${q.category}</span>
+                            <span class="text-slate-400 text-[10px] font-bold uppercase">ID: #${q.id}</span>
+                        </div>
+                        <div class="text-xl md:text-2xl font-bold text-slate-800">${q.question}</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${q.options.map(opt => `
+                                <button onclick="selectOption('${opt}')" ${state.showSolution ? 'disabled' : ''} 
+                                    class="text-left p-5 rounded-2xl border-2 transition-all flex justify-between items-center group
+                                    ${state.selectedOption === opt ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-100 hover:bg-slate-50'}
+                                    ${state.showSolution && opt === q.correctAnswer ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-4 ring-emerald-50' : ''}
+                                    ${state.showSolution && state.selectedOption === opt && opt !== q.correctAnswer ? 'border-rose-500 bg-rose-50 text-rose-700 ring-4 ring-rose-50' : ''}">
+                                    <span class="font-bold">${opt}</span>
+                                    ${state.showSolution && opt === q.correctAnswer ? '<i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>' : ''}
+                                    ${state.showSolution && state.selectedOption === opt && opt !== q.correctAnswer ? '<i class="fa-solid fa-circle-xmark text-rose-500 text-xl"></i>' : ''}
+                                </button>
+                            `).join('')}
+                        </div>
+                        ${!state.showSolution ? `
+                            <button onclick="checkAnswer()" ${!state.selectedOption ? 'disabled' : ''} 
+                                class="w-full py-5 rounded-2xl font-black text-xl transition-all shadow-lg ${state.selectedOption ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}">
+                                Kunci Jawaban
+                            </button>
+                        ` : `
+                            <div class="space-y-4 animate-fade-in">
+                                <div class="p-6 bg-slate-900 text-slate-100 rounded-3xl border-l-8 border-yellow-400">
+                                    <h4 class="font-black text-yellow-400 text-xs uppercase tracking-widest mb-2"><i class="fa-solid fa-lightbulb"></i> Solusi</h4>
+                                    <p class="text-sm leading-relaxed">${q.solution}</p>
+                                </div>
+                                <button onclick="handleNext()" ${state.isSubmitting ? 'disabled' : ''}
+                                    class="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-xl">
+                                    ${state.isSubmitting ? 'Sedang Rekap...' : (state.currentIndex === QUESTION_BANK.length - 1 ? 'Kirim Hasil & Selesai' : 'Soal Selanjutnya')} <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            } else if (state.view === 'result') {
+                const finalScore = Math.round((state.score / QUESTION_BANK.length) * 100);
+                container.innerHTML = `
+                    <div class="bg-indigo-700 p-6 text-white text-center">
+                        <h1 class="text-xl font-bold uppercase tracking-widest">Latihan Selesai!</h1>
+                    </div>
+                    <div class="p-8 text-center space-y-6 animate-fade-in">
+                        <div class="bg-yellow-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto border-4 border-white shadow-lg">
+                            <i class="fa-solid fa-trophy text-yellow-600 text-4xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-800">Hebat, ${state.userName}!</h2>
+                            <p class="text-slate-500 text-sm">Hasilmu telah direkap ke Google Form secara otomatis.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-indigo-700 p-4 rounded-2xl text-white">
+                                <p class="text-[10px] uppercase font-bold opacity-60">Skor</p>
+                                <p class="text-3xl font-black">${finalScore}</p>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Benar</p>
+                                <p class="text-3xl font-black text-emerald-600">${state.score}</p>
+                            </div>
+                            <div class="bg-rose-50 border border-rose-100 p-4 rounded-2xl">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Salah</p>
+                                <p class="text-3xl font-black text-rose-500">${QUESTION_BANK.length - state.score}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-1">
+                            ${state.userAnswers.map((ans, i) => `
+                                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold border-2 ${ans.isCorrect ? 'bg-emerald-500 border-emerald-600 text-white' : 'bg-rose-500 border-rose-600 text-white'}">${i+1}</div>
+                            `).join('')}
+                        </div>
+                        <button onclick="location.reload()" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Ulangi Latihan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // --- LOGIC FUNCTIONS ---
+
+        function startQuiz() {
+            const name = document.getElementById('nameInput').value;
+            if (name.trim()) {
+                state.userName = name;
+                state.view = 'quiz';
+                render();
+            }
+        }
+
+        function selectOption(opt) {
+            if (state.showSolution) return;
+            state.selectedOption = opt;
+            render();
+        }
+
+        function checkAnswer() {
+            const q = QUESTION_BANK[state.currentIndex];
+            const isCorrect = state.selectedOption === q.correctAnswer;
+            if (isCorrect) state.score++;
+            
+            state.userAnswers.push({ id: q.id, isCorrect });
+            state.showSolution = true;
+            render();
+        }
+
+        async function handleNext() {
+            if (state.currentIndex < QUESTION_BANK.length - 1) {
+                state.currentIndex++;
+                state.selectedOption = null;
+                state.showSolution = false;
+                render();
+            } else {
+                state.isSubmitting = true;
+                render();
+                await sendToGoogleForm();
+                state.isSubmitting = false;
+                state.view = 'result';
+                render();
+            }
+        }
+
+        async function sendToGoogleForm() {
+            if (!GOOGLE_FORM_CONFIG.formId) return;
+
+            const finalScore = Math.round((state.score / QUESTION_BANK.length) * 100);
+            const detail = state.userAnswers.map((a, i) => `Q${i+1}:${a.isCorrect ? 'V' : 'X'}`).join(', ');
+
+            const url = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+            const formData = new URLSearchParams();
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.nama, state.userName);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.skor, finalScore);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.jawaban, detail);
+
+            try {
+                // Fetch dengan mode no-cors karena Google tidak mengizinkan CORS pada endpoint ini
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+                console.log("Data Sent");
+            } catch (err) {
+                console.error("Error sending data", err);
+            }
+        }
+
+        // Jalankan render pertama kali
+        render();
+    </script>
+</body>
+</html>
